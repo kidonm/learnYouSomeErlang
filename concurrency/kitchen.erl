@@ -11,8 +11,30 @@ fridge(FoodList) ->
 			case lists:member(Food, FoodList) of
 				true ->
 					From ! {self(), {taken, Food}},
-					fridge(FoodList);
+					fridge(lists:delete(Food,FoodList));
 				false ->
-		_
-			-> io:format("unknown operation")
+					From ! {self(), {notfound, Food}},
+					fridge(FoodList)
+			end;
+		terminate -> 
+			ok
+	end.
+
+start() ->
+	spawn(?MODULE, fridge, [[]]).
+
+store(PID, Food) ->
+	PID ! {self(), {put, Food}},
+	receive
+		{PID, Msg} -> Msg
+	after 3000 ->
+			timeout
+	end.
+
+take(PID, Food) ->
+	PID ! {self(), {take, Food}},
+	receive
+		{PID, Msg} -> Msg
+	after 3000 ->
+			timeout
 	end.
