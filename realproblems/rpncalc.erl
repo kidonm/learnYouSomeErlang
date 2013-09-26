@@ -19,5 +19,11 @@ read(Token) ->
 rpn_test() ->
 	1 = rpnCalc(["5", "4", "-"]).
 
-	
+
+quicksort([]) -> [];
+
+quicksort( [H|T] ) ->
+	quicksort( [X || X <- T, X < H] )
+	++ [H] ++
+	quicksort( [Y || Y <- T, Y > H] ).
 
