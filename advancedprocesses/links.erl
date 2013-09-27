@@ -35,13 +35,13 @@ restarter() ->
 
 critic() ->
 		receive
-				{From, {"Rage Against the Turing Machine", "Unit Testify"}} ->
+				{From, Ref, {"Rage Against the Turing Machine", "Unit Testify"}} ->
 					From ! {self(), "They are great!"};
-				{From, {"System of a Downtime", "Memoize"}} ->
+				{From, Ref, {"System of a Downtime", "Memoize"}} ->
 					From ! {self(), "They're not Johnny Crash but they're good."};
-				{From, {"Johnny Crash", "The Token Ring of Fire"}} ->
+				{From, Ref, {"Johnny Crash", "The Token Ring of Fire"}} ->
 					From ! {self(), "Simply incredible."};
-				{From, {_Band, _Album}} ->
+				{From, Ref, {_Band, _Album}} ->
 					From ! {self(), "They are terrible!"}
 		end,
 		critic().
