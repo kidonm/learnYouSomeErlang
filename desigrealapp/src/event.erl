@@ -10,6 +10,20 @@ normalize(N) ->
 	Limit = 49 * 24 * 60 * 60,
 	[N rem Limit | lists:duplicate(N div Limit, Limit)].
 
+timeToGo(TimeOut={{_,_,_},{_,_,_}}) ->
+	Now = 	calendar:local_time(),
+	ToGo = 	calendar:datetime_to_gregorian_seconds(TimeOut) -
+			calendar:datetime_to_gregorian_seconds(Now),
+
+	Secs = 	if 	ToGo > 0 	-> ToGo;
+				ToGo =< 0	-> 0
+		   	end,
+
+	normalize(Secs).
+	
+			 
+
+
 loop(S = #state{server=Server,to_go=[H|T]}) ->
 	receive
 		{Server, Ref, cancel} ->
@@ -17,24 +31,22 @@ loop(S = #state{server=Server,to_go=[H|T]}) ->
 	after H * 1000 ->
 		case T of 
 			[] -> 
-				io:format("exiting"),
-				Server ! {done, S#state.name},
+				Server ! {done, S#state.name};
 			_ -> 
-				io:format("continue next"),
 				loop(S#state{to_go=T})
 		end
 	end.
 
 start(EventName, Delay) ->
-	spawn(fun() ->	init(self(), EventName, Delay) end).
+	spawn(?MODULE, init, [self(), EventName, Delay]).
 
 start_link(EventName, Delay) ->
-	spawn_link(fun() ->	init(self(), EventName, Delay) end).
+	spawn_link(?MODULE, init, [self(), EventName, Delay]).
 
 init(Pid, EventName, Delay) ->
 	loop(#state{server=Pid,
 			name=EventName,
-			to_go=[5,5]}).
+			to_go=timeToGo(Delay)}).
 
 cancel(Pid) ->
 	Ref = erlang:monitor(process, Pid),
