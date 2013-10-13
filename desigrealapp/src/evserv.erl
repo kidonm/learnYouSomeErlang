@@ -27,6 +27,7 @@ init() ->
 subscribe(Pid) ->
 	Ref = erlang:monitor(process, whereis(?MODULE)),
 	?MODULE ! {self(), Ref, {subscribe, Pid}},
+	io:format("ja + pid : ~p + ~p~n", [self(), Pid]),
 	receive
 		{Ref, ok} ->
 			{ok, Ref};
