@@ -4,7 +4,8 @@
 
 -record(request, {method=register,
 		from="",
-		to=""}).
+		to="",
+		expires=0}).
 
 -record(response, {code="",
 		from="",
@@ -12,6 +13,16 @@
 
 -record(client, {pid="",
 		name=""}).
+
+simplesip_register(From, To) ->
+	makeRegisterRequest(From, To).
+
+simplesip_unregister() ->
+	makeUnregisterRequest(From, To).
+simplesip_call() ->
+
+init([]) -> {ok. []}.
+start_link() -> gen_server:start_link(?MODULE, [], []). 
 
 
 init() -> {}

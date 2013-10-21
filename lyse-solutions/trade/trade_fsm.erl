@@ -111,7 +111,7 @@ init(Name) ->
 %% only wait for our own user to accept the trade,
 %% and store the other's Pid for future uses
 idle({ask_negotiate, OtherPid}, S=#state{}) ->
-    Ref = monitor(process, OtherPid),
+    Ref = erlang:monitor(process, OtherPid),
     notice(S, "~p asked for a trade negotiation", [OtherPid]),
     {next_state, idle_wait, S#state{other=OtherPid, monitor=Ref}};
 idle(Event, Data) ->
@@ -123,7 +123,7 @@ idle(Event, Data) ->
 idle({negotiate, OtherPid}, From, S=#state{}) ->
     ask_negotiate(OtherPid, self()),
     notice(S, "asking user ~p for a trade", [OtherPid]),
-    Ref = monitor(process, OtherPid),
+    Ref = erlang:monitor(process, OtherPid),
     {next_state, idle_wait, S#state{other=OtherPid, monitor=Ref, from=From}};
 idle(Event, _From, Data) ->
     unexpected(Event, idle),

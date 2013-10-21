@@ -1,0 +1,9 @@
+http://joearms.github.io/2013/03/28/solving-the-wrong-problem.html 
+	an article about parallel and sequential parts of program and speeding it up using erlang.
+	detecting sequential parts is much more better than detecting the parallel ones
+
+
+
+
+
+

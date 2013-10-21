@@ -1,5 +1,15 @@
 -module(tradeFsm).
--compile(export_all).
+%% public API
+-export([start/1, start_link/1, trade/2, accept_trade/1,
+make_offer/2, retract_offer/2, ready/1, cancel/1]).
+%% gen_fsm callbacks
+-export([init/1, handle_event/3, handle_sync_event/4, handle_info/3,
+	terminate/3, code_change/4,
+
+% custom state names
+idle/2, idle/3, idle_wait/2, idle_wait/3, negotiate/2,
+negotiate/3, wait/2, ready/2, ready/3]).
+
 -behaviour(gen_fsm).
 -record(state, {name="",
 		other,
@@ -82,7 +92,7 @@ unexpected(Msg, State) ->
 		[self(), Msg, State]).
 
 idle({ask_negotiate, OtherPid}, S=#state{}) ->
-	Ref = monitor(process, OtherPid),
+	Ref = erlang:monitor(process, OtherPid),
 	notice(S, "~p asked for a trade negotiation", [OtherPid]),
 	{next_state, idle_wait, S#state{other=OtherPid, monitor=Ref}};
 
@@ -95,7 +105,7 @@ idle(Event, Data) ->
 idle({negotiate, OtherPid}, From, S=#state{}) ->
 	ask_negotiate(OtherPid, self()),
 	notice(S, "asking user ~p for a trade", [OtherPid]),
-	Ref = monitor(process, OtherPid),
+	Ref = erlang:monitor(process, OtherPid),
 	{next_state, idle_wait, S#state{other=OtherPid, monitor=Ref, from=From}};
 
 idle(Event, _From, Data) ->
@@ -232,13 +242,59 @@ ready(ask_commit, _From, S) ->
 	notice(S, "replying to ask_commit", []),
 	{reply, ready_commit, ready, S};
 
+ready(do_commit, _From, S) ->
+	notice(S, "committing...", []),
+	commit(S),
+	{stop, normal, ok, S};
+
+ready(Event, _From, Data) ->
+	unexpected(Event, ready),
+	{next_state, ready, Data}.
+
+commit(S = #state{}) ->
+	io:format("Transaction completed for ~s. "
+	"Items sent are:~n~p,~n received are:~n~p.~n"
+	"This operation should have some atomic save "
+	"in a database.~n",
+	[S#state.name, S#state.ownitems, S#state.otheritems]).
+
+%% The other player has sent this cancel event
+%% stop whatever we're doing and shut down!
+handle_event(cancel, _StateName, S=#state{}) ->
+	notice(S, "received cancel event", []),
+	{stop, other_cancelled, S};
+
+handle_event(Event, StateName, Data) ->
+	unexpected(Event, StateName),
+	{next_state, StateName, Data}.
 
 
+%%s cancel event comes from the client. We must warn the other
+%% player that we have a quitter!
+handle_sync_event(cancel, _From, _StateName, S = #state{}) ->
+	notify_cancel(S#state.other),
+	notice(S, "cancelling trade, sending cancel event", []),
+	{stop, cancelled, ok, S};
 
+%% Note: DO NOT reply to unexpected calls. Let the call-maker crash!
+handle_sync_event(Event, _From, StateName, Data) ->
+	unexpected(Event, StateName),
+	{next_state, StateName, Data}.
 
+handle_info({'DOWN', Ref, process, Pid, Reason}, _, S=#state{other=Pid, monitor=Ref}) ->
+	notice(S, "Other side dead", []),
+	{stop, {other_down, Reason}, S};
 
+handle_info(Info, StateName, Data) ->
+	unexpected(Info, StateName),
+	{next_state, StateName, Data}.
 
+code_change(_OldVsn, StateName, Data, _Extra) ->
+	{ok, StateName, Data}.
+ 
+%% Transaction completed.
+terminate(normal, ready, S=#state{}) ->
+	notice(S, "FSM leaving.", []);
 
-
-
-
+terminate(_Reason, _StateName, _StateData) ->
+	ok.
