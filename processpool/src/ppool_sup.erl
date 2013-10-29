@@ -1,5 +1,6 @@
 -module(ppool_sup).
 -behaviour(supervisor).
+-compile(export_all).
 
 start_link(Name, Limit, MFA) ->
 	supervisor:start_link(?MODULE, {Name, Limit, MFA}).

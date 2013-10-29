@@ -1,5 +1,6 @@
 -module(ppool_supersup).
 -behaviour(supervisor).
+-compile(export_all).
 
 start_link() ->
 	supervisor:start_link({local, ppool}, ?MODULE, []).
@@ -21,7 +22,7 @@ start_pool(Name, Limit, MFA) ->
 	ChildSpec = {Name, 
 				{ppool_sup, start_link, [Name, Limit, MFA]},
 				permanent, 10500, supervisor, [ppool_sup]},
-	supervisro:start_child(ppool, ChildSpec).
+	supervisor:start_child(ppool, ChildSpec).
 
 stop_pool(Name) ->
 	supervisor:terminate_child(ppool, Name),
