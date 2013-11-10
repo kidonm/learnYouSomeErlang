@@ -30,7 +30,7 @@
 -behaviour(nksip_sipapp).
 -author('Carlos Gonzalez <carlosj.gf@gmail.com>').
 
--export([init/1, get_user_pass/3, authorize/4, route/6, handle_call/3]).
+-export([init/1, invite/3, register/3, get_user_pass/3, authorize/4, route/6, handle_call/3]).
 
 
 
@@ -47,6 +47,13 @@
 init([Id]) ->
     {ok, #state{id=Id, started=httpd_util:rfc1123_date()}}.
 
+invite(_ReqId, _From, State) ->
+	io:format("got invite from client ~n", []),
+    {reply, decline, State}.
+
+register(_ReqId, _From, State) ->
+	io:format("got register from client ~n", []),
+    {reply, register, State}.
 
 %% @doc Called to check user's password.
 %%
