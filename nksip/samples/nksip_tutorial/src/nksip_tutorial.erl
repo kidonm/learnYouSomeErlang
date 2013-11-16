@@ -106,9 +106,7 @@ launch2() ->
         ]),
 
    nksip_uac:register(client1, "sip:127.0.0.1", [{pass, "1234"}, make_contact]),
-   nksip_uac:register(client2, "sip:127.0.0.1", [{pass, "1234"}, make_contact]),
-
-    ok = nksip:stop_all().
+   nksip_uac:register(client2, "sip:127.0.0.1", [{pass, "1234"}, make_contact]).
 
 %% ===================================================================
 %% Utilities

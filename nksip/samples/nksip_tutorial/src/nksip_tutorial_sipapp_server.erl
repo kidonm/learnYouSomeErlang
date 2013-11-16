@@ -109,27 +109,8 @@ authorize(Auth, _ReqId, _From, State) ->
 %% - If it has user part, and domain is "nksip", find if it is registered and proxy.
 %%   For other domain, proxy the request.
 %%
-route(_Scheme, <<>>, Domain, ReqId, _From, #state{id=AppId}=State) ->
-    Reply = case Domain of
-        <<"nksip">> ->
-            process;
-        _ ->
-            case nksip_request:is_local_route(AppId, ReqId) of
-                true -> process;
-                false -> proxy
-            end
-    end,
-    {reply, Reply, State};
-
-route(Scheme, User, Domain, _ReqId, _From, #state{id=Id}=State) ->
-    Reply = case Domain of
-        <<"nksip">> ->
-            UriList = nksip_registrar:find(Id, Scheme, User, <<"nksip">>),
-            {proxy, UriList, [record_route]};
-        _ ->
-            proxy
-    end,
-    {reply, Reply, State}.
+route(_Scheme, _User, _Domain, _ReqId, _From, State) ->
+    {reply, process, State}.
 
 
 %% @doc Synchronous user call.

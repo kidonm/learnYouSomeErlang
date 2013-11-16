@@ -45,7 +45,6 @@ init([Id]) ->
 %% 200 Ok with the same body (spawns a new process to avoid blocking the process).
 %% If not, reply 488 Not Acceptable with a Warning header.
 invite(ReqId, From, #state{id=AppId}=State) ->
-	io:format("got invite", []),
     SDP = nksip_request:body(AppId, ReqId),
     case nksip_sdp:is_sdp(SDP) of
         true ->
