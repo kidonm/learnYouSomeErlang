@@ -55,7 +55,11 @@ tutorial:
 
 loadtest: app
 	erl -config samples/nksip_loadtest/priv/app.config \
-		-args_file samples/nksip_loadtest/priv/vm.args -s nksip_loadtest 
+		-args_file samples/nksip_loadtest/priv/vm.args 
+
+generic_switch: app
+	erl -config generic_switch/priv/app.config \
+		-args_file generic_switch/priv/vm.args -s generic_switch
 
 pbx: app
 	erl -config samples/nksip_pbx/priv/app.config \

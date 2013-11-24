@@ -51,8 +51,8 @@ invite(_ReqId, _From, State) ->
 	io:format("got invite from client ~n", []),
     {reply, decline, State}.
 
-register(_ReqId, _From, State) ->
-	io:format("got register from client ~n", []),
+register(_ReqId, From, State) ->
+	generic_fsm:start_link(From),
     {reply, register, State}.
 
 %% @doc Called to check user's password.

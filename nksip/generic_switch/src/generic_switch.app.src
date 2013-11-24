@@ -1,0 +1,13 @@
+{application, generic_switch,
+	[
+		{description, "Marek Kidon Bachelor thesis"},
+		{vsn,"0.0.0"},
+		{modules, 
+			[
+			]
+		},
+		{ registered, []},
+		{ applications, [kernel,stdlib,nksip]},
+		{env, []}
+	]
+}.

@@ -100,13 +100,8 @@ launch2() ->
             {from, "sip:client1@nksip"},
             {transport, {udp, {127,0,0,1}, 5070}} 
         ]),
-    ok = nksip:start(client2, nksip_tutorial_sipapp_client, [client2], 
-        [   {from, "sips:client2@nksip"},
-            {transport, {udp, {127,0,0,1}, 5080}}
-        ]),
 
-   nksip_uac:register(client1, "sip:127.0.0.1", [{pass, "1234"}, make_contact]),
-   nksip_uac:register(client2, "sip:127.0.0.1", [{pass, "1234"}, make_contact]).
+   nksip_uac:register(client1, "sip:127.0.0.1", [{pass, "1234"}, make_contact]).
 
 %% ===================================================================
 %% Utilities
