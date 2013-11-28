@@ -59,7 +59,7 @@ loadtest: app
 
 generic_switch: app
 	erl -config generic_switch/priv/app.config \
-		-args_file generic_switch/priv/vm.args -s generic_switch
+		-args_file generic_switch/priv/vm.args
 
 pbx: app
 	erl -config samples/nksip_pbx/priv/app.config \

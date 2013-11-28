@@ -11,13 +11,13 @@ launch() ->
 
 	 ok = nksip:start(client1, simple_sip_client, [client1], 
         [
-            {from, "sip:client1@nksip"},
+            {from, "sip:bob@nksip"},
             {transport, {udp, {127,0,0,1}, 5070}} 
         ]),
 
     ok = nksip:start(client2, simple_sip_client, [client2], 
         [
-            {from, "sip:client2@nksip"},
+            {from, "sip:alice@nksip"},
             {transport, {udp, {127,0,0,1}, 5080}} 
         ]),
 

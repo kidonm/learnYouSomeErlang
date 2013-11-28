@@ -1,0 +1,2 @@
+-module(clientpool_supervisor).
+-behaviour(supervisor).
