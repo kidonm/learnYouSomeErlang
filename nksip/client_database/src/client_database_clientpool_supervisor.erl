@@ -1,0 +1,3 @@
+-module(client_database_clientpool_supervisor).
+-behaviour(supervisor).
+-compile(export_all).

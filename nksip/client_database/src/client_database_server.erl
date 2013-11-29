@@ -1,5 +1,6 @@
 -module(client_database_server).
 -behaviour(gen_server).
+-export([start_link/1, init/1]).
 
 -record(state, 
 	{
@@ -8,7 +9,7 @@
 		clientpoolSupPID
 	}).
 
-start_link([SupervisorPID, ETSTable]) ->
+start_link({SupervisorPID, ETSTable}) ->
 	gen_server:start_link({local, ?MODULE}, ?MODULE, [SupervisorPID, ETSTable], []).
 
 init([SupervisorPID, ETSTable]) ->
@@ -16,7 +17,7 @@ init([SupervisorPID, ETSTable]) ->
 		{
 			clientPool, 
 			{
-				clientpool_supervisor,
+				client_database_clientpool_supervisor,
 				start_link,
 				[]
 			},
@@ -29,5 +30,6 @@ init([SupervisorPID, ETSTable]) ->
 		{
 			parentSupPID = SupervisorPID,
 			clientTable = ETSTable,
-			clientpoolSupPID = supervisor:start_child(SuperVisorPID, ClientPoolSup)
+			clientpoolSupPID = supervisor:start_child(SupervisorPID, ClientPoolSup)
 		}
+	}.

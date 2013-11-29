@@ -1,10 +1,11 @@
--module(database_supervisor).
+-module(client_database_supervisor).
 -behaviour(supervisor).
+-export([start_link/0, init/1]).
 
 start_link() ->
 	supervisor:start_link(?MODULE, []).
 
-init(_Args):
+init([]) ->
 	MyTab = ets:new(genericClientETS, [named_table]),
 	ClientDatabaseServer = 
 		{
@@ -18,7 +19,7 @@ init(_Args):
 			2000,
 			worker,
 			[client_database_server]
-		}
-	{ok,{{one_for_all,1,1}, [ClientDatabaseServer]}}
+		},
+	{ok,{{one_for_all,1,1}, [ClientDatabaseServer]}}.
 
 	
