@@ -1,3 +1,7 @@
 -module(client_database).
--compile(export_all).
+-behaviour(application).
+-export([start_link/0]).
+
+start_link() ->
+	client_database_supervisor:start_link().
 
