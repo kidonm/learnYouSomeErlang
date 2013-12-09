@@ -9,6 +9,9 @@
 		clientpoolSupPID
 	}).
 
+addNewClient() ->
+	gen_server:call(?MODULE, {new_client})
+
 start_link(SupervisorPID, ETSTable, ClientPoolSup) ->
 	gen_server:start_link({local, ?MODULE}, ?MODULE,
 	 {
@@ -16,7 +19,6 @@ start_link(SupervisorPID, ETSTable, ClientPoolSup) ->
 	 }, []).
 
 init({SupervisorPID, ETSTable, ClientPoolSup}) ->
-	io:format('tttt~n', []),
 
 	{ok, #state
 		{
@@ -25,3 +27,6 @@ init({SupervisorPID, ETSTable, ClientPoolSup}) ->
 			clientpoolSupPID = ClientPoolSup
 		}
 	}.
+
+handle_call({new_client}, _From, ) ->
+	

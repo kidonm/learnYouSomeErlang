@@ -6,7 +6,8 @@
 						client_database_supervisor, 
 						client_database_clientpool_supervisor,
 						client_database_server,
-						client_database
+						client_database,
+						client_database_testclient
 					]
 			  },
               {registered,[]},
