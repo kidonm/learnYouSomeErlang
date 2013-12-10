@@ -4,3 +4,6 @@
 
 start_test() ->
 	?assertMatch({ok, _ }, client_database:start_link()).
+
+add_client_test() ->
+	?assertMatch()
