@@ -10,7 +10,7 @@
 	}).
 
 addNewClient(Data) ->
-	gen_server:call(?MODULE, Data).	
+	gen_server:call(Data, ?MODULE).	
 
 start_link(SupervisorPID, ETSTable, ClientPoolSup) ->
 	gen_server:start_link({local, ?MODULE}, ?MODULE,
@@ -28,7 +28,8 @@ init({SupervisorPID, ETSTable, ClientPoolSup}) ->
 		}
 	}.
 
-handle_call({add_client, _From}, _From,_State) ->
+%handle_call({add_client, _From2}, _From,_State) ->
+handle_call(_Msg, _From,_State) ->
 	io:format("TTTT", []),
 	%VirtualClientSpecs = 
 	%	{
@@ -45,4 +46,7 @@ handle_call({add_client, _From}, _From,_State) ->
 	%	},
 	%{reply,supervisor:start_child(TargetPID, VirtualClientSpecs) , State}.
 	{reply,"blabla", _State}.
+
+handle_info(_Info, State) ->
+	{noreply, State}.
 	
