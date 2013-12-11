@@ -14,7 +14,9 @@ init([]) ->
 			{
 				client_database_server,
 				start_link,
-				[self(), MyTab, clientPoolSup]
+				[self(), 
+				MyTab,
+				client_database_clientpool_supervisor]
 			},
 			permanent,
 			2000,

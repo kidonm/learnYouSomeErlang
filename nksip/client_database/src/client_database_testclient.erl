@@ -3,7 +3,7 @@
 -export([start_link/0, init/1]).
 
 start_link() ->
-	gen_fsm:start_link(?MODULE, [], []).
+	gen_fsm:start_link({local, ?MODULE},?MODULE, [], []).
 
 init([]) ->
 	{ok, idle, []}.
