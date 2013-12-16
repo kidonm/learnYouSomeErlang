@@ -6,7 +6,7 @@ start_link() ->
 	supervisor:start_link(?MODULE, []).
 
 init([]) ->
-	MyTab = ets:new(genericClientETS, [named_table]),
+	MyTab = ets:new(genericClientETS, [named_table, public]),
 	% server which will receive requests for spawning generic client
 	ClientDatabaseServer = 
 		{
