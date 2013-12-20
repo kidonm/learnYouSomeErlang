@@ -6,4 +6,17 @@ start_link() ->
 	supervisor:start_link({local, ?MODULE} ,?MODULE,[] ).
 
 init([]) ->
-	{ok,{{one_for_all,1,1}, []}}.
+	VirtualClientSpecs = 
+		{
+			virtualClient,
+			{
+				client_database_testclient,
+				start_link,
+				[]
+			},
+			temporary,
+			2000,
+			worker,
+			[client_database_testclient]
+		},
+	{ok,{{simple_one_for_one, 1, 1},[VirtualClientSpecs]}}.

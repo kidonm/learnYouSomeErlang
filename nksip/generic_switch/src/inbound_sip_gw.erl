@@ -15,9 +15,9 @@ invite(_ReqId, _From, State) ->
 	io:format("got invite from client ~n", []),
     {reply, decline, State}.
 
-register(_ReqId, From, State) ->
+register(_ReqId, _From, State) ->
 	io:format("enter register", []),
-	{reply, register, State}.
+	{noreply, State}.
 
 get_user_pass(_User, <<"nksip">>, State) -> 
     {reply, <<"1234">>, State};

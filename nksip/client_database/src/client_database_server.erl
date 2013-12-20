@@ -45,30 +45,25 @@ handle_call({list}, _From, State=#state{clientTable=Table}) ->
 
 handle_call({add_client, Ident}, _From, State=#state{clientpoolSupPID=TargetPID,
 	clientTable=ClientTable}) ->
-	VirtualClientSpecs = 
-		{
-			Ident,
-			{
-				client_database_testclient,
-				start_link,
-				[]
-			},
-			temporary,
-			2000,
-			worker,
-			[client_database_testclient]
-		},
-	
-	
-	Resp = case supervisor:start_child(TargetPID, VirtualClientSpecs) of
-		{ok, PID} ->
-			true = ets:insert(ClientTable, {Ident, PID}),
-		       	{ok, PID};
 
-		{error, {already_started, PID}} -> {ok, PID};
+	Resp = case ets:lookup(ClientTable, Ident) of
+		[{Ident, Value }] -> 
+				{already_started, Value};
 
-		{error, _ErrorTerm} -> {error, _ErrorTerm}
+		[] -> 
+	 		case supervisor:start_child(TargetPID, [Ident]) of
+				{ok, PID} ->
+					true = ets:insert(ClientTable, {Ident, PID}),
+					{ok, PID};
+
+				{error, {already_started, PID}} -> {already_started, PID};
+
+				{error, _ErrorTerm} -> {error, _ErrorTerm}
+			end;
+
+		_ -> {error, "multiple items in table under given key"}
 	end,
+
 
 
 	{reply, Resp, State}.
